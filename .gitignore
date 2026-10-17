@@ -5,3 +5,5 @@ __pycache__/
 outputs/
 *.egg-info/
 .python-version
+
+.venv-lewm/

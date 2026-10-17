@@ -1,0 +1,5 @@
+{
+  "repository": "https://github.com/galilai-group/stable-pretraining",
+  "commit": "ab836bf699a2be712dfcf980a5eb70d36391e876",
+  "original_path": "stable_pretraining/backbone/utils.py"
+}

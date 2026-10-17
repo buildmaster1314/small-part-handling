@@ -1,43 +1,47 @@
 # 面向小型零件搬运的机械臂控制系统设计
 
-Design of a Robotic Arm Control System for Small-Part Handling
+当前主视频是 2026-10-17 用已训练的官方 LeWM 权重重新录制的示教参考引导 MPC。它使用双相机图像、关节和上一动作，并依赖一条示教的名义动作与目标图像。这不是脱离示教的自主策略，也不能把单次放入孔里说成模型已经学会搬运。FCPG 残差预测仍未通过规划验收，没有接管这次录像。
 
-## 课题说明
+## 最新离线训练实验（2026-10-17）
 
-小型零件的抓取与搬运是机械臂在自动化生产、装配和实验平台中的常见应用。由于零件尺寸较小，操作过程中容易受到目标位置、机械臂运动精度和夹爪设置的影响，出现抓取不稳、零件滑落或放置偏差。
+新增 8 条完整教师轨迹和 128 个成组接触干预片段，按新父轨迹 4/2/2 隔离训练、验证和测试。FCPG 残差完成 1200 步多步训练。新测试的接触动作分支中，0.5 秒视觉误差/保持基线为 0.925，1 秒为 1.099；关节误差仍高于关节命令基线。学习控制仍关闭，新权重未接管机械臂，也未替换现有搬运视频。
 
-本项目实现一套面向小型零件抓取、搬运和放置的机械臂控制系统，内容包括：
+完整数据、固定权重、同起点动作对照及限制见 [本轮结果报告](outputs/fcpg_contact_round2/结果报告.md) 和 [重现说明](outputs/fcpg_contact_round2/README.md)。新测试仅两个独立父轨迹，不代表可靠成功率。原场景的相机安装、物理参数与 RGB 几何控制器保持不变。
 
-1. 小型零件识别与定位：获取工作区域内目标零件的位置。
-2. 机械臂抓取与搬运控制：完成运动、夹爪开合，以及抓取—搬运—放置流程。
-3. 系统性能测试：在不同零件位置、运动速度和夹爪参数下测试抓取和搬运效果。
+## 当前结果
 
-最终目标是在真实机械臂平台上完成任务，并用成功率、执行时间、放置误差和重复性评价系统。后续可扩展多工位搬运、不同尺寸零件和抓取失败重试。
+蓝架到远端橙架距离为 268 mm。默认 1→1、整体架位移动 4 mm/−3 mm、移动 12 mm，以及 1→2 跨孔四个固定场景检查均完成搬运、松爪和退开。每项只运行一次，不能作为可靠成功率估计。12 mm 架位移动下，原样动作回放失败，实时视觉控制通过；小幅移动下二者都通过。
 
-## 当前状态
+原始夹爪与两个相机安装位置保持不变，试管只受接触与重力作用。没有等式约束、mocap、额外夹持垫或复位后的试管位姿写入。全过程最大倾角满足 0.10 rad 判定，但松爪后约 4.2°，**未满足 2°竖直要求**。摩擦仍未经实物标定，液体仍只是视觉几何。
 
-仿真平台使用公开的 SO-101 MuJoCo 模型。当前代码可以加载带桌面、小零件和放置位的工作单元，并运行一条脚本化的抓取—搬运—放置关节轨迹。
-
-尚未实现：
-
-- 视觉识别与目标定位
-- 逆运动学，当前关节目标是固定示教值
-- 夹爪接触是否真正抓住零件的判定
-- 真实机械臂接口
-- 成功率、放置误差和重复性实验统计
+详细验收、失败记录、训练配置、模型选择、独立测试和限制见 `outputs/fcpg_tube/结果报告.md` 与 `outputs/fcpg_tube/使用说明.md`。旧版说明保存在 `outputs/fcpg_tube/历史README_20261016.md`，旧视频在安装备份目录中。
 
 ## 运行
 
+在项目根目录执行，每次使用新的结果目录：
+
 ```bash
-uv sync
-uv run small-part-sim
-uv run small-part-sim --viewer
+PYTHONPATH=src MUJOCO_GL=egl LP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=1 \
+  .venv/bin/python -m small_part.evaluate_visual_transfer \
+  --output outputs/new_visual_run
 ```
 
-`--speed` 改变运动时间比例。离屏运行不需要显示器；`--viewer` 需要本机图形界面。
+录像时增加 `--video` 并设置 `FFMPEG_BINARY`。指定橙架孔位使用 `--target-index 2`。默认根据 RGB 检测到的孔位选择最近目标。策略使用当前场景的颜色、已知尺寸和相机标定，尚不是通用识别系统。
 
-## 第三方模型
+`outputs/tube_place.mp4` 是这次 LeWM 参考引导 MPC 的双相机录像，36 秒、640×240；`tube_overhead.mp4`、`tube_wrist.mp4` 是分视角，`tube_place.gif` 是同一段。对应结果在 `outputs/lewm_video_20261017/result.json`，并已复制为 `tube_physical_validation.json` 与 `tube_visual_execution.npz`。被替换的 RGB 几何录像在 `outputs/backup_before_lewm_video_20261017_213537`。权重是 `outputs/improved_tube/training/calibration/calibrated_weights.pt`，参考轨迹是 `outputs/improved_tube/scenarios/00_train.npz`。
 
-`third_party/so_arm100` 来自公开仓库
-[TheRobotStudio/SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100)，
-遵循其中的 Apache License 2.0。本仓库不包含任何私有项目代码。
+## FCPG 训练
+
+采用公开的 `gw769/feedback-corrected-grounding`，固定提交 `70763d0017d8ad3d65e7a46e58bd0614bf848c92`，实际导入原始 `TemporalStateResidualLeWM`。基础 LeWM 来自 `lucas-maes/le-wm` 的 `8edfeb336732b5f3ce7b8b210d0ba370a09e2cac`。具体本地适配、第三方来源和 CPU 训练入口在结果包中，不声称完整复现论文实验。
+
+原有 16 条轨迹加上 48 段短时探索，按父轨迹分为 8/4/4 个训练、验证、测试父组。完成三次各 2000 步的残差训练和一次 2500 步基础预测补训。选定权重在 `outputs/fcpg_tube/selected_fcpg`，基础权重与归一化统计一并保存。
+
+独立测试中的视觉预测和长时关节预测仍未超过简单基线；新视觉搬运轨迹上的预测也明显变差。因此 `deployment_gate.json` 标记学习控制未启用。不能把这次成功搬运归功于 FCPG，也不能把训练损失下降当作规划成功。
+
+## 检查与限制
+
+```bash
+MUJOCO_GL=egl .venv-lewm/bin/python -m unittest discover -s tests -v
+```
+
+真实机械臂、实物摩擦标定、流体仿真、可靠失败恢复、所有孔位的稳定搬运和学习模型带来的成功率收益仍未完成。原有教师和示教引导 MPC 代码保留作为历史实验，不是当前默认入口。

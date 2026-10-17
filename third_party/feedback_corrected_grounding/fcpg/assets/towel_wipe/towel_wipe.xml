@@ -1,0 +1,106 @@
+<mujoco model="fcpg_towel_wipe_v0">
+    <compiler angle="radian" inertiafromgeom="auto" inertiagrouprange="4 5"/>
+    <option timestep="0.0025" iterations="50" tolerance="1e-10"
+            solver="Newton" jacobian="dense" cone="elliptic"/>
+
+    <asset>
+        <mesh name="base" file="__METAWORLD_ASSET_DIR__/objects/meshes/xyz_base/base.stl"/>
+        <mesh name="eGripperBase" file="__METAWORLD_ASSET_DIR__/objects/meshes/xyz_base/eGripperBase.stl"/>
+        <mesh name="head" file="__METAWORLD_ASSET_DIR__/objects/meshes/xyz_base/head.stl"/>
+        <mesh name="l0" file="__METAWORLD_ASSET_DIR__/objects/meshes/xyz_base/l0.stl"/>
+        <mesh name="l1" file="__METAWORLD_ASSET_DIR__/objects/meshes/xyz_base/l1.stl"/>
+        <mesh name="l2" file="__METAWORLD_ASSET_DIR__/objects/meshes/xyz_base/l2.stl"/>
+        <mesh name="l3" file="__METAWORLD_ASSET_DIR__/objects/meshes/xyz_base/l3.stl"/>
+        <mesh name="l4" file="__METAWORLD_ASSET_DIR__/objects/meshes/xyz_base/l4.stl"/>
+        <mesh name="l5" file="__METAWORLD_ASSET_DIR__/objects/meshes/xyz_base/l5.stl"/>
+        <mesh name="l6" file="__METAWORLD_ASSET_DIR__/objects/meshes/xyz_base/l6.stl"/>
+        <mesh name="pedestal" file="__METAWORLD_ASSET_DIR__/objects/meshes/xyz_base/pedestal.stl"/>
+        <material name="xyz_col" rgba="0.3 0.3 1 0.5" shininess="0" specular="0.5"/>
+        <material name="table_mat" rgba="0.38 0.40 0.42 1" shininess="0.08"/>
+        <material name="floor_mat" rgba="0.16 0.17 0.18 1" shininess="0"/>
+    </asset>
+
+    <default>
+        <default class="xyz_base">
+            <joint armature="0.001" damping="2" limited="true"/>
+            <geom conaffinity="0" contype="0" group="1" type="mesh"/>
+            <position ctrllimited="true" ctrlrange="0 1.57"/>
+            <default class="base_viz">
+                <geom conaffinity="0" condim="4" contype="0" group="1"
+                      margin="0.001" solimp=".8 .9 .01" solref=".02 1"
+                      type="mesh"/>
+            </default>
+            <default class="base_col">
+                <geom conaffinity="1" condim="4" contype="1" group="4"
+                      margin="0.001" material="xyz_col" solimp=".8 .9 .01"
+                      solref=".02 1"/>
+            </default>
+        </default>
+    </default>
+
+    <visual>
+        <map fogstart="1.5" fogend="5" force="0.1" znear="0.01"/>
+        <quality shadowsize="2048" offsamples="4"/>
+        <headlight ambient="0.45 0.45 0.45"/>
+    </visual>
+
+    <worldbody>
+        <light castshadow="false" directional="true" diffuse="0.45 0.45 0.45"
+               pos="-1 -1 1" dir="1 1 -1"/>
+        <light directional="true" diffuse="0.35 0.35 0.35"
+               pos="1 -1 1" dir="-1 1 -1"/>
+        <camera name="towel_view" mode="fixed" pos="0.78 0.12 0.58"
+                xyaxes="0.52 0.854 0 -0.42 0.256 0.87" fovy="50"/>
+
+        <geom name="floor" type="plane" pos="0 0 -0.9" size="4 4 0.1"
+              material="floor_mat" contype="1" conaffinity="1"/>
+        <body name="table" pos="0 0.62 0">
+            <geom name="table_top" type="box" pos="0 0 -0.025"
+                  size="0.55 0.40 0.025" material="table_mat"
+                  contype="1" conaffinity="1" friction="1.4 0.08 0.002"/>
+            <geom name="table_base" type="box" pos="0 0 -0.45"
+                  size="0.48 0.34 0.425" material="table_mat"
+                  contype="1" conaffinity="1"/>
+        </body>
+
+        <include file="__METAWORLD_ASSET_DIR__/objects/assets/xyz_base.xml"/>
+
+        <body name="towel" pos="0 0.60 0.012">
+            <freejoint name="towel_free"/>
+            <inertial pos="0 0 0.012" mass="0.06"
+                      diaginertia="0.00010 0.00016 0.00020"/>
+            <geom name="towel_pad" type="box" pos="0 0 0"
+                  size="0.075 0.048 0.006" rgba="0.08 0.64 0.86 1"
+                  contype="1" conaffinity="1" condim="4"
+                  friction="0.8 0.08 0.003" solimp="0.95 0.99 0.01"
+                  solref="0.01 1"/>
+            <geom name="objGeom" type="box" pos="0 0 0.027"
+                  size="0.027 0.018 0.021" rgba="0.05 0.40 0.60 1"
+                  contype="1" conaffinity="1" condim="4"
+                  friction="3.0 0.20 0.006"/>
+            <geom name="towel_stripe_left" type="box" pos="-0.040 0 0.0065"
+                  size="0.006 0.047 0.001" rgba="0.82 0.96 1 1"
+                  contype="0" conaffinity="0" group="0"/>
+            <geom name="towel_stripe_right" type="box" pos="0.040 0 0.0065"
+                  size="0.006 0.047 0.001" rgba="0.82 0.96 1 1"
+                  contype="0" conaffinity="0" group="0"/>
+        </body>
+
+        <site name="wipe_left" type="box" pos="-0.19 0.60 0.002"
+              size="0.022 0.065 0.002" rgba="0.96 0.78 0.12 0.65"/>
+        <site name="wipe_right" type="box" pos="0.19 0.60 0.002"
+              size="0.022 0.065 0.002" rgba="0.96 0.78 0.12 0.65"/>
+        <site name="goal" type="sphere" pos="-0.19 0.60 0.012" size="0.001"
+              rgba="0 0 0 0"/>
+    </worldbody>
+
+    <actuator>
+        <position ctrllimited="true" ctrlrange="-1 1" joint="r_close"
+                  kp="400" user="1"/>
+        <position ctrllimited="true" ctrlrange="-1 1" joint="l_close"
+                  kp="400" user="1"/>
+    </actuator>
+    <equality>
+        <weld body1="mocap" body2="hand" solref="0.02 1"/>
+    </equality>
+</mujoco>

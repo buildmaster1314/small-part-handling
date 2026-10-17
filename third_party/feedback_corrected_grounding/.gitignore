@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv-lerobot/
+
+# Local outputs
+data/
+outputs/
+runs/
+wandb/
+
+# A local SO-ARM100 checkout may contain hundreds of MB of printable parts and
+# media. Only the explicitly force-added SO101 MuJoCo subset is vendored.
+third_party/so_arm100/*

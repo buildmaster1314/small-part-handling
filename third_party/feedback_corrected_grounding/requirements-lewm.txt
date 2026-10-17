@@ -1,0 +1,21 @@
+# Tested dependency snapshot for the FCPG-adapted LeWM runtime.
+# Python: 3.10.20; CUDA build: cu121.
+#
+# `scripts/train_lewm_grounded.py` and `scripts/evaluate_lewm_grounded.py`
+# are verified against these versions. The untouched upstream train.py is an
+# archival provenance snapshot; stable-pretraining 0.1.7 changed the Resize
+# transform API, so the original runner is not claimed as directly executable.
+
+torch==2.5.1+cu121
+torchvision==0.20.1+cu121
+einops==0.8.2
+numpy==1.26.4
+scikit-learn==1.7.2
+hydra-core==1.3.2
+omegaconf==2.3.0
+lightning==2.6.4
+wandb==0.27.0
+stable-pretraining==0.1.7
+stable-worldmodel[train,env]==0.1.0
+
+# Install torch/torchvision from the index matching the target CUDA runtime.

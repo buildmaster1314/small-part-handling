@@ -1,0 +1,140 @@
+<mujoco model="fcpg_drawer_retrieve_v0">
+    <compiler angle="radian" inertiafromgeom="auto" inertiagrouprange="4 5"/>
+    <option timestep="0.0025" iterations="50" tolerance="1e-10"
+            solver="Newton" jacobian="dense" cone="elliptic"/>
+
+    <!--
+      The environment resolves this token into MetaWorld's installed asset
+      directory and materializes a loadable copy in the system temp directory.
+      The task geometry below is entirely local and primitive-based.
+    -->
+    <asset>
+        <mesh name="base" file="__METAWORLD_ASSET_DIR__/objects/meshes/xyz_base/base.stl"/>
+        <mesh name="eGripperBase" file="__METAWORLD_ASSET_DIR__/objects/meshes/xyz_base/eGripperBase.stl"/>
+        <mesh name="head" file="__METAWORLD_ASSET_DIR__/objects/meshes/xyz_base/head.stl"/>
+        <mesh name="l0" file="__METAWORLD_ASSET_DIR__/objects/meshes/xyz_base/l0.stl"/>
+        <mesh name="l1" file="__METAWORLD_ASSET_DIR__/objects/meshes/xyz_base/l1.stl"/>
+        <mesh name="l2" file="__METAWORLD_ASSET_DIR__/objects/meshes/xyz_base/l2.stl"/>
+        <mesh name="l3" file="__METAWORLD_ASSET_DIR__/objects/meshes/xyz_base/l3.stl"/>
+        <mesh name="l4" file="__METAWORLD_ASSET_DIR__/objects/meshes/xyz_base/l4.stl"/>
+        <mesh name="l5" file="__METAWORLD_ASSET_DIR__/objects/meshes/xyz_base/l5.stl"/>
+        <mesh name="l6" file="__METAWORLD_ASSET_DIR__/objects/meshes/xyz_base/l6.stl"/>
+        <mesh name="pedestal" file="__METAWORLD_ASSET_DIR__/objects/meshes/xyz_base/pedestal.stl"/>
+        <material name="xyz_col" rgba="0.3 0.3 1 0.5" shininess="0" specular="0.5"/>
+        <material name="table_mat" rgba="0.42 0.43 0.45 1" shininess="0.15"/>
+        <material name="floor_mat" rgba="0.16 0.17 0.18 1" shininess="0"/>
+    </asset>
+
+    <default>
+        <default class="xyz_base">
+            <joint armature="0.001" damping="2" limited="true"/>
+            <geom conaffinity="0" contype="0" group="1" type="mesh"/>
+            <position ctrllimited="true" ctrlrange="0 1.57"/>
+            <default class="base_viz">
+                <geom conaffinity="0" condim="4" contype="0" group="1"
+                      margin="0.001" solimp=".8 .9 .01" solref=".02 1"
+                      type="mesh"/>
+            </default>
+            <default class="base_col">
+                <geom conaffinity="1" condim="4" contype="1" group="4"
+                      margin="0.001" material="xyz_col" solimp=".8 .9 .01"
+                      solref=".02 1"/>
+            </default>
+        </default>
+        <default class="task_primitive">
+            <geom type="box" group="0" contype="1" conaffinity="1" condim="4"
+                  friction="1.5 0.1 0.002" solimp="0.95 0.99 0.01"
+                  solref="0.01 1" density="180"/>
+        </default>
+    </default>
+
+    <visual>
+        <map fogstart="1.5" fogend="5" force="0.1" znear="0.01"/>
+        <quality shadowsize="2048" offsamples="4"/>
+        <headlight ambient="0.45 0.45 0.45"/>
+    </visual>
+
+    <worldbody>
+        <light castshadow="false" directional="true" diffuse="0.45 0.45 0.45"
+               pos="-1 -1 1" dir="1 1 -1"/>
+        <light directional="true" diffuse="0.35 0.35 0.35"
+               pos="1 -1 1" dir="-1 1 -1"/>
+        <camera name="drawer_view" mode="fixed" pos="0.75 0.25 0.55"
+                xyaxes="0.531 0.847 0 -0.383 0.240 0.889" fovy="52"/>
+
+        <geom name="floor" type="plane" pos="0 0 -0.9" size="4 4 0.1"
+              material="floor_mat" contype="1" conaffinity="1"/>
+        <body name="table" pos="0 0.65 0">
+            <geom name="table_top" type="box" pos="0 0 -0.025"
+                  size="0.55 0.42 0.025" material="table_mat"
+                  contype="1" conaffinity="1" friction="1.5 0.1 0.002"/>
+            <geom name="table_base" type="box" pos="0 0 -0.45"
+                  size="0.48 0.35 0.425" material="table_mat"
+                  contype="1" conaffinity="1"/>
+        </body>
+
+        <include file="__METAWORLD_ASSET_DIR__/objects/assets/xyz_base.xml"/>
+
+        <body name="drawer_outer" pos="0 0.84 0">
+            <!-- Every visible shell primitive is also its collision geometry. -->
+            <geom class="task_primitive" name="outer_left" pos="-0.14 0 0.105"
+                  size="0.012 0.17 0.105" rgba="0.08 0.62 0.22 1"/>
+            <geom class="task_primitive" name="outer_right" pos="0.14 0 0.105"
+                  size="0.012 0.17 0.105" rgba="0.08 0.62 0.22 1"/>
+            <geom class="task_primitive" name="outer_back" pos="0 0.158 0.105"
+                  size="0.14 0.012 0.105" rgba="0.08 0.62 0.22 1"/>
+            <geom class="task_primitive" name="outer_top" pos="0 0.03 0.198"
+                  size="0.152 0.14 0.012" rgba="0.08 0.62 0.22 1"/>
+        </body>
+
+        <body name="drawer" pos="0 0.84 0">
+            <inertial pos="0 -0.02 0.06" mass="0.45"
+                      diaginertia="0.004 0.004 0.006"/>
+            <joint name="drawer_slide" type="slide" axis="0 -1 0"
+                   range="0 0.20" limited="true" damping="2.5"
+                   frictionloss="0.08" armature="0.01"/>
+            <geom class="task_primitive" name="drawer_bottom" pos="0 -0.015 0.025"
+                  size="0.118 0.14 0.008" rgba="0.82 0.08 0.08 1"/>
+            <geom class="task_primitive" name="drawer_front" pos="0 -0.155 0.085"
+                  size="0.125 0.012 0.075" rgba="0.82 0.08 0.08 1"/>
+            <geom class="task_primitive" name="drawer_left" pos="-0.118 -0.015 0.075"
+                  size="0.008 0.14 0.05" rgba="0.82 0.08 0.08 1"/>
+            <geom class="task_primitive" name="drawer_right" pos="0.118 -0.015 0.075"
+                  size="0.008 0.14 0.05" rgba="0.82 0.08 0.08 1"/>
+            <geom class="task_primitive" name="drawer_back" pos="0 0.115 0.075"
+                  size="0.11 0.008 0.05" rgba="0.82 0.08 0.08 1"/>
+            <geom class="task_primitive" name="drawer_handle_left_support"
+                  pos="-0.055 -0.192 0.112" size="0.008 0.025 0.008"
+                  rgba="0.82 0.08 0.08 1"/>
+            <geom class="task_primitive" name="drawer_handle_right_support"
+                  pos="0.055 -0.192 0.112" size="0.008 0.025 0.008"
+                  rgba="0.82 0.08 0.08 1"/>
+            <geom class="task_primitive" name="drawer_handle_geom" pos="0 -0.225 0.112"
+                  size="0.07 0.012 0.012" rgba="0.82 0.08 0.08 1"/>
+            <site name="drawer_handle" pos="0 -0.225 0.112" size="0.008"
+                  rgba="0.82 0.08 0.08 0"/>
+        </body>
+
+        <body name="block" pos="0 0.82 0.052">
+            <inertial pos="0 0 0" mass="0.03"
+                      diaginertia="0.0000065 0.0000065 0.0000065"/>
+            <freejoint name="block_free"/>
+            <geom class="task_primitive" name="objGeom" size="0.018 0.018 0.018"
+                  rgba="0.98 0.72 0.08 1" density="650"
+                  friction="2 0.15 0.003"/>
+        </body>
+
+        <site name="goal" type="box" pos="0 0.78 0.212" size="0.04 0.04 0.002"
+              rgba="0.12 0.35 0.95 0.45"/>
+    </worldbody>
+
+    <actuator>
+        <position ctrllimited="true" ctrlrange="-1 1" joint="r_close"
+                  kp="400" user="1"/>
+        <position ctrllimited="true" ctrlrange="-1 1" joint="l_close"
+                  kp="400" user="1"/>
+    </actuator>
+    <equality>
+        <weld body1="mocap" body2="hand" solref="0.02 1"/>
+    </equality>
+</mujoco>

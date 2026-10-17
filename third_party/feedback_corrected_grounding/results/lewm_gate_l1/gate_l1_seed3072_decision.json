@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "protocol": "fcpg_grounded_lewm_gate_l1_formal_decision",
+  "date": "2026-07-13",
+  "decision": "No-Go",
+  "passed": false,
+  "frozen_repository": {
+    "head": "8f2b22bc10c2dc8810ca850e42ee513656a193cc",
+    "worktree_clean_during_evaluation": true
+  },
+  "matrix_manifest": {
+    "path": "config/lewm/eval/gate_l1_matrix_seed3072.json",
+    "frozen_sha256": "69f45029b5de3bc540359ed28ebbc265cf4e8f4144ea2fee492bf299ee802ec6",
+    "effective_sha256": "616575f1a52b68d58b6d336e779c15cb8196625401a934831d4ac5029b5b5842",
+    "only_runtime_override": {
+      "field": "evaluation.result_dir",
+      "frozen_value": "results/lewm_gate_l1/matrix_seed3072",
+      "effective_value": "outputs/lewm_grounded/gate_l1_matrix_seed3072",
+      "reason": "Keep evaluator outputs inside a Git-ignored directory so checkpoint provenance remains clean."
+    }
+  },
+  "formal_training": {
+    "seed": 3072,
+    "optimizer_steps": 10000,
+    "batch_size": 192,
+    "warmup_steps": 637,
+    "alignment_weight": 1.0,
+    "sigreg_weight": 0.02,
+    "nominal": {
+      "checkpoint_sha256": "87c5023270b7e127a6b2a7ec8a81abeb34460b2c3cc8c7472839e3c82f2c582d",
+      "training_manifest_sha256": "cdf34901d59e19e678e08b9d91e3e7f7a26588c5c658f5098ad861c968022efb"
+    },
+    "fcpg": {
+      "checkpoint_sha256": "729f9f0f0d01c400f3736542f1a8ad5970deba21406541ae2fe8b13404ea306a",
+      "training_manifest_sha256": "e5f06bbada637d0c97d261f29987ca850ef6e81c09793039c1f1bdf5a1b3e898"
+    }
+  },
+  "test_contract": {
+    "tasks": [
+      "button-press-v3",
+      "pick-place-v3",
+      "push-v3",
+      "reach-v3"
+    ],
+    "episodes_per_task": 30,
+    "frames_per_episode": 100,
+    "conditions": [
+      "clean",
+      "rotation5",
+      "translation4",
+      "rotation10"
+    ],
+    "physical_identity_sha256": "22d4737bb17a982834db2df61218ea1b37359427e724634e7bd9e444af4f29b8",
+    "oracle_target_encoder_sha256": "7c8ce2120a592403c5908cb68733b7e8ee5ded79b9292d68ff78907c6ab91c31",
+    "matrix_cells": 16,
+    "primary_conditions": [
+      "rotation5",
+      "translation4"
+    ],
+    "primary_horizons": [
+      1,
+      3,
+      5
+    ],
+    "rotation10_stress_only": true
+  },
+  "primary": {
+    "estimand": "paired mean episode ratio within task, equal condition/horizon/task macro",
+    "nominal_task_macro_ratio": 0.9052265022031258,
+    "fcpg_task_macro_ratio": 0.8454092241032943,
+    "relative_improvement": 0.06607990149896094,
+    "relative_improvement_95_ci": [
+      0.054711146687641966,
+      0.07848320876747394
+    ],
+    "positive_task_count": 4,
+    "task_relative_improvement": {
+      "button-press-v3": 0.08181183494476274,
+      "pick-place-v3": 0.07944043799890779,
+      "push-v3": 0.048440793082827616,
+      "reach-v3": 0.06049252167310694
+    },
+    "fcpg_beats_hold_last_by_task": {
+      "button-press-v3": true,
+      "pick-place-v3": true,
+      "push-v3": true,
+      "reach-v3": false
+    }
+  },
+  "clean": {
+    "nominal_task_macro_ratio": 0.49341735576557577,
+    "fcpg_task_macro_ratio": 0.5001100551649982,
+    "relative_regression": 0.013563972408384702
+  },
+  "representation": {
+    "overall_effective_rank": {
+      "nominal": 31.256580313848673,
+      "fcpg": 32.014058434115604,
+      "ratio": 1.0242341968526647
+    },
+    "overall_participation_ratio": {
+      "nominal": 18.021924712712703,
+      "fcpg": 18.665996035534924,
+      "ratio": 1.0357382096024346
+    }
+  },
+  "same_checkpoint_intervention": {
+    "nominal_trained": {
+      "nominal_eval": 0.9052265022031258,
+      "fcpg_eval": 0.8934940534778553,
+      "fcpg_direction": true
+    },
+    "fcpg_trained": {
+      "nominal_eval": 0.9954006571873627,
+      "fcpg_eval": 0.8454092241032943,
+      "fcpg_direction": true
+    }
+  },
+  "preregistered_checks": {
+    "relative_improvement_at_least_10_percent": false,
+    "paired_bootstrap_ci_excludes_zero": true,
+    "at_least_three_tasks_improve": true,
+    "every_task_beats_hold_last": false,
+    "clean_regression_within_five_percent": true,
+    "overall_representation_not_collapsed": true,
+    "per_task_representation_not_collapsed": true,
+    "same_checkpoint_interventions_agree": true,
+    "matched_diagonal_direction_agrees": true
+  },
+  "estimand_sensitivity": {
+    "estimand": "paired ratio of episode means within condition/horizon, equal task macro",
+    "relative_improvement": 0.06513198240439723,
+    "relative_improvement_95_ci": [
+      0.05390190651556203,
+      0.07716985188803918
+    ],
+    "same_decision": true
+  },
+  "artifact_sha256": {
+    "ignored_full_summary": "f1547f621b73b0508aa77e06bded7aa8d84387389ff9857125d686d820bc00a4",
+    "external_audit_output": "a6f1107de4214975ea76ab94b19d638f873c46baf4fce83de577724e7b8d3f11",
+    "external_audit_script": "ab13a6d2c3d71acfe56977e325ebfaf2a08732848f6b25ff75a2c5de61c15dad",
+    "cells": {
+      "clean/fcpg/fcpg": "7e26290522e3930c8b53a76b6731935aef5248080c9d88da55a4e737d09c2725",
+      "clean/fcpg/nominal": "b2a1b3027049dee484591a9f0caec5d63273c50a53f4ff56dc71ccaac98713a6",
+      "clean/nominal/fcpg": "b9193b90068c3dddc693ed22b203c37c9db0f9cdbfbc7be214322eedf6a80aca",
+      "clean/nominal/nominal": "b2e4c8157522a82581da42424d85d3477969b90c3a85495dffe60e1e9409963f",
+      "rotation10/fcpg/fcpg": "a16e09ab8252c3c71d1413dbde44978246d05f57dd14f61409862710402839f0",
+      "rotation10/fcpg/nominal": "78f18525040cb9530c5c7f11b77bae892076b96f11357ff19b129a33a2497cbf",
+      "rotation10/nominal/fcpg": "9d0de7c55ff4bed9e9ebbb785d2dd29ed5ea9222b2dff76de0bf56fc98969586",
+      "rotation10/nominal/nominal": "50f8ad9061fce31957d5afac327fd76b770fb97313c91046086c171a7eea0afa",
+      "rotation5/fcpg/fcpg": "a3a8e17efcb7ca4eff59448f68ed5fe681537ea03196e59c3b0348c7e524b055",
+      "rotation5/fcpg/nominal": "72930fbb260a5e6d2c8fc658ae85574ddb3d30e036e4b114c4e5cfe9f9167a8b",
+      "rotation5/nominal/fcpg": "007dc30b9d865c5281b4a53c2a3501bd78e487d609460aa6c612cdf925e1930f",
+      "rotation5/nominal/nominal": "8eafb785286e4b4e1bf5ddd04b4aad4d7960f67290f4412d838063396888fd65",
+      "translation4/fcpg/fcpg": "ed66f1dbebf9ddb792cd323ba60b941948a99d7b9cca9014a2237eb4ece901f4",
+      "translation4/fcpg/nominal": "44beb6360975dbf299a08803385b2e937931399f961390aac9e3039510d4a49f",
+      "translation4/nominal/fcpg": "7accde7ccc5398aa940e91d48e844a927378a2eebc482f9ddf153d21a428b515",
+      "translation4/nominal/nominal": "5c1f4b059ad5aea63510c9c8e5cec728e3fdd49dbf985316406615084696e79c"
+    }
+  },
+  "scope_decision": {
+    "stage_i_fcpg_remains_main_contribution": true,
+    "full_grounded_lewm_is_positive_offline_evidence_but_not_a_paper_contribution": true,
+    "gate_l2_counterfactual_ranking_started": false,
+    "gate_l3_online_cem_started": false,
+    "reason": "Gate L1 failed the preregistered 10% improvement threshold and the every-task hold-last requirement."
+  }
+}

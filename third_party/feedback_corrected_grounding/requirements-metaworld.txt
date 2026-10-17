@@ -1,0 +1,7 @@
+# Minimal extra dependencies for the MetaWorld-first FCPG experiments.
+# Use with the existing environment:
+# /home/james/lewm/.venv/bin/python3 -m pip install -r requirements-metaworld.txt
+
+metaworld==3.1.1
+timm==1.0.27
+opencv-python-headless==4.11.0.86

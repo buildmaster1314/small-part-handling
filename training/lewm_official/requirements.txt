@@ -1,0 +1,4 @@
+transformers==4.57.6
+einops==0.8.2
+h5py==3.16.0
+omegaconf==2.4.0

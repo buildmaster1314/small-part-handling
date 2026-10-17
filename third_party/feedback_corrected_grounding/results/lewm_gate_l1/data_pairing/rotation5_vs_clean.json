@@ -1,0 +1,19 @@
+{
+  "camera_differences": {
+    "actual_camera_rotation_axis": true,
+    "actual_camera_rotation_deg": true,
+    "actual_camera_translation_xyz": false,
+    "control_q_true": true,
+    "q_true": true,
+    "rgb": true,
+    "true_extrinsic": true
+  },
+  "intervention_path": "/home/james/feedback-corrected-grounding/data/lewm_gate_l1_test/paired_v2/rotation5_4tasks_30eps_224_seed9100.npz",
+  "intervention_sha256": "ba23401d374d2c842e3e5723fa72c495eee2a7a332c37535d2874d0f67c19247",
+  "physical_identity_sha256": "22d4737bb17a982834db2df61218ea1b37359427e724634e7bd9e444af4f29b8",
+  "reference_path": "/home/james/feedback-corrected-grounding/data/lewm_gate_l1_test/paired_v2/clean_4tasks_30eps_224_seed9100.npz",
+  "reference_sha256": "36a0dc2ceb31a9f4d1fcfc80ed1e73235056f25424c20d46fd3084a7b06d6bbb",
+  "sample_count": 12000,
+  "schema_version": 1,
+  "validated": true
+}

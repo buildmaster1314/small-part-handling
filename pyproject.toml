@@ -4,12 +4,12 @@ version = "0.1.0"
 description = "Robotic arm control system for small-part pick, transport, and place."
 requires-python = ">=3.12"
 dependencies = [
-  "mujoco>=3.3,<3.4",
+  "mujoco[viewer]>=3.3,<3.4",
   "numpy>=1.26,<3",
+  "pillow>=10",
+  "scipy>=1.11",
+  "torch>=2.0",
 ]
-
-[project.scripts]
-small-part-sim = "small_part.simulate:main"
 
 [tool.uv]
 package = true
